@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Hi <span th:text="${profileName}">User</span>,</p>
-<p>Here is your daily expense summary:</p>
-<table cellspacing="0" cellpadding="0" border="0" width="100%" style="border-collapse: collapse;">
-    <tr style="background:#eee;">
-        <th style="border:1px solid #ccc; padding:6px; text-align:left;">S.No</th>
-        <th style="border:1px solid #ccc; padding:6px; text-align:left;">Name</th>
-        <th style="border:1px solid #ccc; padding:6px; text-align:left;">Amount</th>
-        <th style="border:1px solid #ccc; padding:6px; text-align:left;">Category</th>
-        <th style="border:1px solid #ccc; padding:6px; text-align:left;">Date</th>
-    </tr>
-    <tr th:each="expense, iterStat : ${expenses}">
-        <td style="border:1px solid #ccc; padding:6px;" th:text="${iterStat.index + 1}"></td>
-        <td style="border:1px solid #ccc; padding:6px;" th:text="${expense.name}"></td>
-        <td style="border:1px solid #ccc; padding:6px;" th:text="${expense.amount}"></td>
-        <td style="border:1px solid #ccc; padding:6px;" th:text="${expense.categoryName}"></td>
-        <td style="border:1px solid #ccc; padding:6px;" th:text="${expense.date}"></td>
-    </tr>
-</table>
+    <p>Hi <span th:text="${profileName}">User</span>,</p>
+    <p>Here is your daily expense summary:</p>
+    <table cellspacing="0" cellpadding="0" border="0" width="100%" style="border-collapse: collapse;">
+        <tr style="background:#eee;">
+            <th style="border:1px solid #ccc; padding:6px; text-align:left;">S.No</th>
+            <th style="border:1px solid #ccc; padding:6px; text-align:left;">Name</th>
+            <th style="border:1px solid #ccc; padding:6px; text-align:left;">Amount</th>
+            <th style="border:1px solid #ccc; padding:6px; text-align:left;">Category</th>
+            <th style="border:1px solid #ccc; padding:6px; text-align:left;">Date</th>
+        </tr>
+        <tr th:each="expense, iterStat : ${expenses}">
+            <td style="border:1px solid #ccc; padding:6px;" th:text="${iterStat.index + 1}"></td>
+            <td style="border:1px solid #ccc; padding:6px;" th:text="${expense.name}"></td>
+            <td style="border:1px solid #ccc; padding:6px;" th:text="${expense.amount}"></td>
+            <td style="border:1px solid #ccc; padding:6px;" th:text="${expense.categoryName}"></td>
+            <td style="border:1px solid #ccc; padding:6px;" th:text="${expense.date}"></td>
+        </tr>
+    </table>
 </body>
 </html>

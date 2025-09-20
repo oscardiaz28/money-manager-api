@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.Map;
 import java.util.Optional;
@@ -32,14 +34,16 @@ public class ProfileService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
+    private final SpringTemplateEngine templateEngine;
 
-    public ProfileService(ProfileRepository profileRepository, ProfileMapper profileMapper, EmailService emailService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+    public ProfileService(ProfileRepository profileRepository, ProfileMapper profileMapper, EmailService emailService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils, SpringTemplateEngine templateEngine) {
         this.profileRepository = profileRepository;
         this.profileMapper = profileMapper;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
+        this.templateEngine = templateEngine;
     }
 
     public ProfileDTO registerProfile(ProfileDTO body){
@@ -57,7 +61,12 @@ public class ProfileService {
         String subject = "Active su cuenta en Money Manager";
         String mailBody = "Haga clic en el siguiente enlace para activar su cuenta " + activationLink;
 
-        emailService.sendEmail(newProfile.getEmail(), subject, mailBody);
+        Context context = new Context();
+        context.setVariable("profileName", saved.getFullName());
+        context.setVariable("activationLink", activationLink);
+        String htmlContent = templateEngine.process("activation-template", context);
+
+        emailService.sendEmail(newProfile.getEmail(), subject, htmlContent);
         return profileMapper.toDTO(saved);
     }
 

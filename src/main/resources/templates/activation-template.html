@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" >
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        *{
+            box-sizing: "border-box";
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Outfit, sans-serif;
+            background-color: "#fff";
+            display: flex;
+        }
+        .box{
+            width: 100%;
+            max-width: 580px;
+            margin: 0 auto;
+            background: "#fff";
+            border: 1px solid #eee;
+            padding: 35px 30px;
+        }
+        .box_title{
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 50px;
+        }
+        .box_subtitle{
+            margin-top: 8px;
+        }
+        .box_btn{
+            display: block;
+            margin-top: 25px;
+            width: fit-content;
+            color: white;
+            background: #3556b2;
+            padding: 6px 18px;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .box_btn:hover{
+            background: #3261de;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2 class="box_title">Bienvenido a Money Manager</h2>
+        <p>Hola, <span th:text="${profileName}">User</span> </p>
+        <p class="box_subtitle">Haga clic en el siguiente enlace para activar su cuenta</p>
+        <a th:href="${activationLink}" class="box_btn">Activar cuenta</a>
+    </div>
+
+</body>
+</html>

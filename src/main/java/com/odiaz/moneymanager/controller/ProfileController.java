@@ -2,6 +2,7 @@ package com.odiaz.moneymanager.controller;
 
 import com.odiaz.moneymanager.dto.profile.AuthDTO;
 import com.odiaz.moneymanager.dto.profile.ProfileDTO;
+import com.odiaz.moneymanager.dto.profile.ProfileMapper;
 import com.odiaz.moneymanager.model.ProfileEntity;
 import com.odiaz.moneymanager.security.JwtAuthFilter;
 import com.odiaz.moneymanager.service.ProfileService;
@@ -18,9 +19,11 @@ import java.util.Objects;
 public class ProfileController {
 
     private final ProfileService profileService;
+    private final ProfileMapper profileMapper;
 
-    public ProfileController(ProfileService profileService) {
+    public ProfileController(ProfileService profileService, ProfileMapper profileMapper) {
         this.profileService = profileService;
+        this.profileMapper = profileMapper;
     }
 
     @PostMapping("/register")
@@ -56,7 +59,9 @@ public class ProfileController {
     @GetMapping("/profile")
     public ResponseEntity<?> userLogged(){
         ProfileEntity profile = profileService.getUserLogged();
-        return ResponseEntity.ok().body(profile);
+        ProfileDTO resp = profileMapper.toDTO(profile);
+
+        return ResponseEntity.ok().body(resp);
     }
 
 

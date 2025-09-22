@@ -34,7 +34,7 @@ public class CategoryService {
     public CategoryDTO saveCategory(CategoryDTO body) {
         ProfileEntity profile = profileService.getUserLogged();
         if( categoryRepository.existsByNameAndProfileId(body.getName(), profile.getId()) ){
-            throw new RuntimeException("Category with this name already exist");
+            throw new RuntimeException("Ya existe una categoria con este nombre");
         }
         CategoryEntity category = categoryMapper.toEntity(body, profile);
         return categoryMapper.toDto(categoryRepository.save(category));
@@ -51,7 +51,7 @@ public class CategoryService {
     public CategoryDTO updateCategory(Integer categoryId, CategoryDTO body){
         ProfileEntity profile = profileService.getUserLogged();
         CategoryEntity existingCategory = categoryRepository.findByIdAndProfileId(categoryId, profile.getId())
-                .orElseThrow( () -> new RuntimeException("Category not found") );
+                .orElseThrow( () -> new RuntimeException("Categoria no encontrada") );
         existingCategory.setName(body.getName());
         existingCategory.setIcon(body.getIcon());
         existingCategory.setType(body.getType());

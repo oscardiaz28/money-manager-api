@@ -1,5 +1,6 @@
 package com.odiaz.moneymanager.controller;
 
+import com.odiaz.moneymanager.dto.income.IncomeChartDTO;
 import com.odiaz.moneymanager.dto.income.IncomeDTO;
 import com.odiaz.moneymanager.service.IncomeService;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,12 @@ public class IncomeController {
     public ResponseEntity<?> addIncome(@RequestBody IncomeDTO body){
         IncomeDTO income = incomeService.addExpense(body);
         return ResponseEntity.ok().body(income);
+    }
+
+    @GetMapping("/chart")
+    public ResponseEntity<?> getChartData(){
+        List<IncomeChartDTO> data = incomeService.getLast7Days();
+        return ResponseEntity.ok().body(data);
     }
 
 }

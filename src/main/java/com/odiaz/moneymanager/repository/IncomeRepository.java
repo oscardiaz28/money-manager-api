@@ -1,5 +1,6 @@
 package com.odiaz.moneymanager.repository;
 
+import com.odiaz.moneymanager.dto.income.IncomeChartDTO;
 import com.odiaz.moneymanager.model.IncomeEntity;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,4 +26,12 @@ public interface IncomeRepository extends JpaRepository<IncomeEntity, Integer> {
     List<IncomeEntity> findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(Integer profileId, LocalDate startDate, LocalDate endDate, String keyword, Sort sort);
 
     List<IncomeEntity> findByProfileIdAndDateBetween(Integer profileId, LocalDate startDate, LocalDate endDate);
+
+    @Query("SELECT new com.odiaz.moneymanager.dto.income.IncomeChartDTO(ti.date, SUM(ti.amount)) " +
+            "FROM IncomeEntity ti " +
+            "WHERE ti.date >= :date AND ti.profile.id = :profileId " +
+            "GROUP BY ti.date ORDER BY ti.date ASC")
+    List<IncomeChartDTO> findLast7Days(@Param("date") LocalDate date,
+                                       @Param("profileId") Integer profileId);
+
 }

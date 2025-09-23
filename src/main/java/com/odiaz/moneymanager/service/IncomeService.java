@@ -1,6 +1,7 @@
 package com.odiaz.moneymanager.service;
 
 import com.odiaz.moneymanager.dto.expense.ExpenseDTO;
+import com.odiaz.moneymanager.dto.income.IncomeChartDTO;
 import com.odiaz.moneymanager.dto.income.IncomeDTO;
 import com.odiaz.moneymanager.dto.income.IncomeMapper;
 import com.odiaz.moneymanager.model.CategoryEntity;
@@ -88,6 +89,12 @@ public class IncomeService {
         ProfileEntity profile = profileService.getUserLogged();
         List<IncomeEntity> incomes =  incomeRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(), startDate, endDate, keyword, sort);
         return incomes.stream().map(incomeMapper::toDto).toList();
+    }
+
+    public List<IncomeChartDTO> getLast7Days(){
+        ProfileEntity profile = profileService.getUserLogged();
+        LocalDate fromDate = LocalDate.now().minusDays(6);
+        return incomeRepository.findLast7Days(fromDate, profile.getId());
     }
 
 }

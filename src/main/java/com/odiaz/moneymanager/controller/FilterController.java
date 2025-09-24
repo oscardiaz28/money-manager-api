@@ -27,7 +27,8 @@ public class FilterController {
 
     @PostMapping
     public ResponseEntity<?> filterTransactions(@RequestBody FilterDTO filter){
-        LocalDate startDate = filter.getStartDate() != null ? filter.getStartDate() : LocalDate.MIN;
+        LocalDate start = LocalDate.now().withDayOfMonth(1);
+        LocalDate startDate = filter.getStartDate() != null ? filter.getStartDate() : start;
         LocalDate endDate = filter.getEndDate() != null ? filter.getEndDate() : LocalDate.now();
         String keyword = filter.getKeyword() != null ? filter.getKeyword() : "";
         String sortField = filter.getSortField() != null ? filter.getSortField() : "date";

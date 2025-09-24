@@ -25,7 +25,7 @@ public interface IncomeRepository extends JpaRepository<IncomeEntity, Integer> {
 
     List<IncomeEntity> findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(Integer profileId, LocalDate startDate, LocalDate endDate, String keyword, Sort sort);
 
-    List<IncomeEntity> findByProfileIdAndDateBetween(Integer profileId, LocalDate startDate, LocalDate endDate);
+    List<IncomeEntity> findByProfileIdAndDateBetweenOrderByDateDesc(Integer profileId, LocalDate startDate, LocalDate endDate);
 
     @Query("SELECT new com.odiaz.moneymanager.dto.income.IncomeChartDTO(ti.date, SUM(ti.amount)) " +
             "FROM IncomeEntity ti " +

@@ -24,12 +24,14 @@ public class IncomeService {
     private final IncomeMapper incomeMapper;
     private final CategoryRepository categoryRepository;
     private final ProfileService profileService;
+    private final ExcelService excelService;
 
-    public IncomeService(IncomeRepository incomeRepository, IncomeMapper incomeMapper, CategoryRepository categoryRepository, ProfileService profileService) {
+    public IncomeService(IncomeRepository incomeRepository, IncomeMapper incomeMapper, CategoryRepository categoryRepository, ProfileService profileService, ExcelService excelService) {
         this.incomeRepository = incomeRepository;
         this.incomeMapper = incomeMapper;
         this.categoryRepository = categoryRepository;
         this.profileService = profileService;
+        this.excelService = excelService;
     }
 
     private CategoryEntity findCategory(Integer categoryId){
@@ -37,16 +39,24 @@ public class IncomeService {
                 .orElseThrow( () -> new RuntimeException("Category not found") );
     }
 
-    public List<IncomeDTO> getCurrentMontExpensesForCurrentUser(){
+    public List<IncomeDTO> getIncomes(){
+        ProfileEntity profile = profileService.getUserLogged();
+        List<IncomeEntity> incomes = incomeRepository.findByProfileIdOrderByDateDesc(profile.getId());
+        return incomes.stream()
+                .map( incomeMapper::toDto )
+                .toList();
+    }
+
+    public List<IncomeDTO> getCurrentMontIncomesForCurrentUser(){
         ProfileEntity profile = profileService.getUserLogged();
         LocalDate now = LocalDate.now();
         LocalDate startDate = now.withDayOfMonth(1);
         LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
         System.out.println("StartDate: " + startDate);
         System.out.println("EndDate: " + endDate);
-        List<IncomeEntity> expenses = incomeRepository
-                .findByProfileIdAndDateBetween(profile.getId(), startDate, endDate);
-        return expenses.stream()
+        List<IncomeEntity> incomes = incomeRepository
+                .findByProfileIdAndDateBetweenOrderByDateDesc(profile.getId(), startDate, endDate);
+        return incomes.stream()
                 .map( incomeMapper::toDto )
                 .toList();
     }
@@ -95,6 +105,22 @@ public class IncomeService {
         ProfileEntity profile = profileService.getUserLogged();
         LocalDate fromDate = LocalDate.now().minusDays(6);
         return incomeRepository.findLast7Days(fromDate, profile.getId());
+    }
+
+    public byte[] getExcel(){
+        ProfileEntity profile = profileService.getUserLogged();
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = now.withDayOfMonth(1);
+        LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
+
+        List<IncomeEntity> data = incomeRepository
+                .findByProfileIdAndDateBetweenOrderByDateDesc(profile.getId(), startDate, endDate);
+
+        List<IncomeDTO> incomes =  data.stream()
+                .map( incomeMapper::toDto )
+                .toList();
+
+        return excelService.writeIncomesToExcel(incomes);
     }
 
 }

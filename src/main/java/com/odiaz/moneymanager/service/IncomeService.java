@@ -120,7 +120,7 @@ public class IncomeService {
                 .map( incomeMapper::toDto )
                 .toList();
 
-        return excelService.writeIncomesToExcel(incomes);
+        return excelService.writeTransactionsToExcel(incomes);
     }
 
 }

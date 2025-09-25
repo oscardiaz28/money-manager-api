@@ -50,9 +50,7 @@ public class IncomeController {
 
     @GetMapping("/excel")
     public ResponseEntity<?> getExcelFile(){
-
         byte[] excel = incomeService.getExcel();
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=incomes.xlsx")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

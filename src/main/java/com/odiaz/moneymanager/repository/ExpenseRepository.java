@@ -1,6 +1,8 @@
 package com.odiaz.moneymanager.repository;
 
+import com.odiaz.moneymanager.dto.expense.ExpenseChartDTO;
 import com.odiaz.moneymanager.dto.expense.ExpenseDTO;
+import com.odiaz.moneymanager.dto.income.IncomeChartDTO;
 import com.odiaz.moneymanager.model.ExpenseEntity;
 import com.odiaz.moneymanager.model.IncomeEntity;
 import com.odiaz.moneymanager.model.ProfileEntity;
@@ -29,6 +31,15 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Integer>
 
     List<ExpenseEntity> findByProfileIdAndDateBetween(Integer profileId, LocalDate startDate, LocalDate endDate);
 
+    List<ExpenseEntity> findByProfileIdAndDateBetweenOrderByDateDesc(Integer profileId, LocalDate startDate, LocalDate endDate);
+
    List<ExpenseEntity> findByProfileIdAndDate(Integer profileId, LocalDate date);
+
+    @Query("SELECT new com.odiaz.moneymanager.dto.expense.ExpenseChartDTO(ti.date, SUM(ti.amount)) " +
+            "FROM ExpenseEntity ti " +
+            "WHERE ti.date >= :date AND ti.profile.id = :profileId " +
+            "GROUP BY ti.date ORDER BY ti.date ASC")
+    List<ExpenseChartDTO> findLast7Days(@Param("date") LocalDate date,
+                                        @Param("profileId") Integer profileId);
 
 }

@@ -1,5 +1,6 @@
 package com.odiaz.moneymanager.service;
 
+import com.odiaz.moneymanager.dto.TransactionDTO;
 import com.odiaz.moneymanager.dto.income.IncomeDTO;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -15,7 +16,7 @@ import java.util.stream.IntStream;
 @Service
 public class ExcelService {
 
-    public byte[] writeIncomesToExcel(List<IncomeDTO> incomes) {
+    public <T extends TransactionDTO> byte[] writeTransactionsToExcel(List<T> transactions) {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Usuarios");
             // encabezado
@@ -26,15 +27,15 @@ public class ExcelService {
             headerRow.createCell(3).setCellValue("Monto");
             headerRow.createCell(4).setCellValue("Fecha");
 
-            IntStream.range(0, incomes.size())
+            IntStream.range(0, transactions.size())
                     .forEach( i -> {
-                        IncomeDTO income = incomes.get(i);
+                        TransactionDTO dto = transactions.get(i);
                         Row row = sheet.createRow(i+1);
                         row.createCell(0).setCellValue(i+1);
-                        row.createCell(1).setCellValue(income.getName());
-                        row.createCell(2).setCellValue(income.getCategoryId() != null ? income.getName() : "N/A");
-                        row.createCell(3).setCellValue(income.getAmount().toString());
-                        row.createCell(4).setCellValue(income.getDate().toString());
+                        row.createCell(1).setCellValue(dto.getName());
+                        row.createCell(2).setCellValue(dto.getCategoryId() != null ? dto.getName() : "N/A");
+                        row.createCell(3).setCellValue(dto.getAmount().toString());
+                        row.createCell(4).setCellValue(dto.getDate().toString());
                     });
 
             // Convertir workbook a bytes
@@ -48,4 +49,5 @@ public class ExcelService {
         }
 
     }
+
 }

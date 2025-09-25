@@ -1,7 +1,10 @@
 package com.odiaz.moneymanager.controller;
 
+import com.odiaz.moneymanager.dto.expense.ExpenseChartDTO;
 import com.odiaz.moneymanager.dto.expense.ExpenseDTO;
 import com.odiaz.moneymanager.service.ExpenseService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +23,23 @@ public class ExpenseController {
 
     @GetMapping
     public ResponseEntity<?> getExpenses(){
-        List<ExpenseDTO> expenses = expenseService.getCurrentMontExpensesForCurrentUser();
+        List<ExpenseDTO> expenses = expenseService.getExpenses();
         return ResponseEntity.ok().body(expenses);
+    }
+
+    @GetMapping("/chart")
+    public ResponseEntity<?> getChart(){
+        List<ExpenseChartDTO> data = expenseService.getLast7Days();
+        return ResponseEntity.ok().body(data);
+    }
+
+    @GetMapping("/excel")
+    public ResponseEntity<?> getExcelDocument(){
+        byte[] excel = expenseService.getExcel();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=expenses.xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(excel);
     }
 
     @DeleteMapping("/{id}")

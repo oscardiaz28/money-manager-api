@@ -1,9 +1,13 @@
 package com.odiaz.moneymanager.service;
 
+import com.odiaz.moneymanager.dto.expense.ExpenseChartDTO;
 import com.odiaz.moneymanager.dto.expense.ExpenseDTO;
 import com.odiaz.moneymanager.dto.expense.ExpenseMapper;
+import com.odiaz.moneymanager.dto.income.IncomeChartDTO;
+import com.odiaz.moneymanager.dto.income.IncomeDTO;
 import com.odiaz.moneymanager.model.CategoryEntity;
 import com.odiaz.moneymanager.model.ExpenseEntity;
+import com.odiaz.moneymanager.model.IncomeEntity;
 import com.odiaz.moneymanager.model.ProfileEntity;
 import com.odiaz.moneymanager.repository.CategoryRepository;
 import com.odiaz.moneymanager.repository.ExpenseRepository;
@@ -22,17 +26,27 @@ public class ExpenseService {
     private final ExpenseMapper expenseMapper;
     private final ProfileService profileService;
     private final CategoryRepository categoryRepository;
+    private final ExcelService excelService;
 
-    public ExpenseService(ExpenseRepository expenseRepository, ExpenseMapper expenseMapper, ProfileService profileService, CategoryRepository categoryRepository) {
+    public ExpenseService(ExpenseRepository expenseRepository, ExpenseMapper expenseMapper, ProfileService profileService, CategoryRepository categoryRepository, ExcelService excelService) {
         this.expenseRepository = expenseRepository;
         this.expenseMapper = expenseMapper;
         this.profileService = profileService;
         this.categoryRepository = categoryRepository;
+        this.excelService = excelService;
     }
 
     private CategoryEntity findCategory(Integer categoryId){
         return categoryRepository.findById(categoryId)
                 .orElseThrow( () -> new RuntimeException("Category not found") );
+    }
+
+    public List<ExpenseDTO> getExpenses(){
+        ProfileEntity profile = profileService.getUserLogged();
+        List<ExpenseEntity> expenses = expenseRepository.findByProfileIdOrderByDateDesc(profile.getId());
+        return expenses.stream()
+                .map( expenseMapper::toDto )
+                .toList();
     }
 
     public List<ExpenseDTO> getCurrentMontExpensesForCurrentUser(){
@@ -96,6 +110,28 @@ public class ExpenseService {
         List<ExpenseEntity> expenses = expenseRepository.findByProfileIdAndDate(profileId, date);
         return expenses.stream()
                 .map(expenseMapper::toDto).toList();
+    }
+
+    public List<ExpenseChartDTO> getLast7Days(){
+        ProfileEntity profile = profileService.getUserLogged();
+        LocalDate fromDate = LocalDate.now().minusDays(6);
+        return expenseRepository.findLast7Days(fromDate, profile.getId());
+    }
+
+    public byte[] getExcel(){
+        ProfileEntity profile = profileService.getUserLogged();
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = now.withDayOfMonth(1);
+        LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
+
+        List<ExpenseEntity> data = expenseRepository
+                .findByProfileIdAndDateBetweenOrderByDateDesc(profile.getId(), startDate, endDate);
+
+        List<ExpenseDTO> expenses =  data.stream()
+                .map( expenseMapper::toDto )
+                .toList();
+
+        return excelService.writeTransactionsToExcel(expenses);
     }
 
 }

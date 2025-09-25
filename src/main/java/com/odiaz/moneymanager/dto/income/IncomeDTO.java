@@ -1,5 +1,6 @@
 package com.odiaz.moneymanager.dto.income;
 
+import com.odiaz.moneymanager.dto.TransactionDTO;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class IncomeDTO {
+public class IncomeDTO implements TransactionDTO {
     private Integer id;
     private String name;
     private String icon;

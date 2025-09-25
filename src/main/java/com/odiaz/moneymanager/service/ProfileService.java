@@ -56,6 +56,7 @@ public class ProfileService {
         newProfile.setPassword(passwordEncoder.encode(newProfile.getPassword()));
 
         ProfileEntity saved = profileRepository.save(newProfile);
+        /*
         // send activation email
         String activationLink = activationUrl + "/activate?token="+newProfile.getActivationToken();
         String subject = "Active su cuenta en Money Manager";
@@ -67,6 +68,7 @@ public class ProfileService {
         String htmlContent = templateEngine.process("activation-template", context);
 
         emailService.sendEmail(newProfile.getEmail(), subject, htmlContent);
+        */
         return profileMapper.toDTO(saved);
     }
 

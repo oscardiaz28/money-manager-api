@@ -29,7 +29,7 @@ public class ProfileController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody ProfileDTO body){
         ProfileDTO registered = profileService.registerProfile(body);
-        return ResponseEntity.ok().body(registered);
+        return ResponseEntity.ok().body(Map.of("message", "Usuario registrado correctamente"));
     }
 
     @GetMapping("/activate")

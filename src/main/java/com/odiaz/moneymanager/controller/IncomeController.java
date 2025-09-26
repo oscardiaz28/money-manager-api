@@ -30,6 +30,12 @@ public class IncomeController {
         return ResponseEntity.ok().body(incomes);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findIncome(@PathVariable Integer id){
+        IncomeDTO income = incomeService.getIncome(id);
+        return ResponseEntity.ok().body(income);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteIncome(@PathVariable Integer id){
         incomeService.deleteIncome(id);

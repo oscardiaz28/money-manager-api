@@ -2,6 +2,7 @@ package com.odiaz.moneymanager.controller;
 
 import com.odiaz.moneymanager.dto.expense.ExpenseChartDTO;
 import com.odiaz.moneymanager.dto.expense.ExpenseDTO;
+import com.odiaz.moneymanager.dto.income.IncomeDTO;
 import com.odiaz.moneymanager.service.ExpenseService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,6 +26,12 @@ public class ExpenseController {
     public ResponseEntity<?> getExpenses(){
         List<ExpenseDTO> expenses = expenseService.getExpenses();
         return ResponseEntity.ok().body(expenses);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findExpense(@PathVariable Integer id){
+        ExpenseDTO expense = expenseService.getExpense(id);
+        return ResponseEntity.ok().body(expense);
     }
 
     @GetMapping("/chart")

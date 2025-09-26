@@ -63,6 +63,16 @@ public class ExpenseService {
                 .toList();
     }
 
+    public ExpenseDTO getExpense(Integer id){
+        ProfileEntity profile = profileService.getUserLogged();
+        ExpenseEntity expense = expenseRepository.findById(id)
+                .orElseThrow( () -> new RuntimeException("Expense no encontrado") );
+        if( !expense.getProfile().getId().equals(profile.getId()) ){
+            throw new RuntimeException("No tiene permisos para realizar esta acción");
+        }
+        return expenseMapper.toDto(expense);
+    }
+
     public void deleteExpense(Integer expenseId){
         ProfileEntity profile = profileService.getUserLogged();
         ExpenseEntity expense = expenseRepository.findById(expenseId)

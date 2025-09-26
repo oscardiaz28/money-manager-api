@@ -1,5 +1,6 @@
 package com.odiaz.moneymanager.service;
 
+import com.odiaz.moneymanager.dto.category.CategoryDTO;
 import com.odiaz.moneymanager.dto.expense.ExpenseDTO;
 import com.odiaz.moneymanager.dto.income.IncomeChartDTO;
 import com.odiaz.moneymanager.dto.income.IncomeDTO;
@@ -93,6 +94,16 @@ public class IncomeService {
         IncomeEntity newIncome = incomeMapper.toEntity(body, profile, category);
         IncomeEntity saved = incomeRepository.save(newIncome);
         return incomeMapper.toDto(saved);
+    }
+
+    public IncomeDTO getIncome(Integer id){
+        ProfileEntity profile = profileService.getUserLogged();
+        IncomeEntity income = incomeRepository.findById(id)
+                .orElseThrow( () -> new RuntimeException("Income no encontrado") );
+        if( !income.getProfile().getId().equals(profile.getId()) ){
+            throw new RuntimeException("No tiene permisos para realizar esta acción");
+        }
+        return incomeMapper.toDto(income);
     }
 
     public List<IncomeDTO> filterExpenses(LocalDate startDate, LocalDate endDate, String keyword, Sort sort){

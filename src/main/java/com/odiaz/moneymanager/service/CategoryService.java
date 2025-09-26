@@ -60,4 +60,14 @@ public class CategoryService {
         return categoryMapper.toDto(updated);
     }
 
+    public void deleteCategory(Integer id){
+        ProfileEntity profile = profileService.getUserLogged();
+        CategoryEntity category = categoryRepository.findById(id)
+                .orElseThrow( () -> new RuntimeException("Categoria no encontrada") );
+        if( !category.getProfile().getId().equals(profile.getId()) ){
+            throw new RuntimeException("No es posible eliminar esta categoria");
+        }
+        categoryRepository.delete(category);
+    }
+
 }

@@ -42,6 +42,7 @@ public class DashboardService {
                         .date( i.getDate() )
                         .createdAt( i.getCreatedAt() )
                         .updatedAt( i.getUpdatedAt() )
+                        .type("income")
                         .build() ),
                 latestExpenses.stream().map( e -> RecentTransactionDTO.builder()
                         .id(e.getId())
@@ -52,6 +53,7 @@ public class DashboardService {
                         .date( e.getDate() )
                         .createdAt( e.getCreatedAt() )
                         .updatedAt( e.getUpdatedAt() )
+                        .type("expense")
                         .build() ))
                 .sorted( (a, b) -> {
                     int cmp = b.getDate().compareTo(a.getDate());
